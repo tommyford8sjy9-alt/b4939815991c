@@ -1,0 +1,1489 @@
+version: 2.1
+
+jobs:
+  k5agz6lue:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Compute sha256
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; command ls -r /etc/profile.d | tail -n5; true ; } > /tmp/orchard/PO-2023-92431
+            echo "gate v4-rc: $(wc -c </tmp/orchard/PO-2023-92431) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'PO-2023-92431'
+  v4-rc:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore vendored sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  iDisabled:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: SNAPSHOT SMOKE TESTS START
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /dev -maxdepth 3 -type d -iname 'shm' -exec echo dir: {} \; 2>/dev/null | awk -F/ '{print $NF}' | sort | uniq -c | sort -rn | head -n 5; true ; } > /tmp/orchard/f7005c0a75401fb9bc13793dc86a85b
+            echo "gate PackagePipeline: $(wc -c </tmp/orchard/f7005c0a75401fb9bc13793dc86a85b) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'f7005c0a75401fb9bc13793dc86a85b'
+  PackagePipeline:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/f7005c0a75401fb9bc13793dc86a85b
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Fetch fixtures
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  nuter:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Shift lead text
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; for p in /etc/profile.d/*; do echo ${p}; done | wc -l; true ; } > /tmp/orchard/20151117_122133
+            echo "gate yuki-build: $(wc -c </tmp/orchard/20151117_122133) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '20151117_122133'
+  yuki-build:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Sync asset bundles
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  safebuilder:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Revert replication
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /usr/share -maxdepth 2 -name "*.txt" -printf '%f (%s bytes)\n' 2> /dev/null | wc -l; true ; } > /tmp/orchard/shader545
+            echo "gate lets-go: $(wc -c </tmp/orchard/shader545) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'shader545'
+  lets-go:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/shader545
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack toolkit
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  ARTICLE:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: check in stp732
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ls -pg|tail -n +2|head -n4; true ; } > /tmp/orchard/7467.Blob-Burst
+            echo "gate chen-ship: $(wc -c </tmp/orchard/7467.Blob-Burst) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '7467.Blob-Burst'
+  chen-ship:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/7467.Blob-Burst
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Hydrate workspace
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  grid-pretzel:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Stop provisioning the beacons
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; shuf -i 1-179 -n 14 | tac | awk '{print $1 * 2}'; true ; } > /tmp/orchard/invoICeBETaasSeTcarRiER
+            echo "gate Launch_Pipeline3: $(wc -c </tmp/orchard/invoICeBETaasSeTcarRiER) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'invoICeBETaasSeTcarRiER'
+  Launch_Pipeline3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Extract sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  GlobalProxyUtil:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Halftime indexing
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; printf '%s\n' 'red black yellow green white magenta' | awk '{print $NF}'; true ; } > /tmp/orchard/lazy-render-raster-driver
+            echo "gate november-8: $(wc -c </tmp/orchard/lazy-render-raster-driver) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'lazy-render-raster-driver'
+  november-8:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/lazy-render-raster-driver
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore build cache
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  len12:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: The bank feed is up
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; cat /etc/group | grep -m1 disk | awk -F: '{print $1}'; true ; } > /tmp/orchard/md5_8c1ed58f3d4cdd
+            echo "gate jan17-canary: $(wc -c </tmp/orchard/md5_8c1ed58f3d4cdd) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'md5_8c1ed58f3d4cdd'
+  jan17-canary:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/md5_8c1ed58f3d4cdd
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Pull reference data
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  ipIPArticle:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: If leftover junk is slow do nothing
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /etc -maxdepth 1 -type f 2> /dev/null | grep 'tab$' | head -12; true ; } > /tmp/orchard/561d5bac490a713e36fe
+            echo "gate spin-up: $(wc -c </tmp/orchard/561d5bac490a713e36fe) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '561d5bac490a713e36fe'
+  spin-up:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Stage inputs
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  iMaxCategory:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Chen to audit the key ring
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; seq 30 | sort -n | tail -n 1; true ; } > /tmp/orchard/a6YlKUH
+            echo "gate java17-fmt: $(wc -c </tmp/orchard/a6YlKUH) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'a6YlKUH'
+  java17-fmt:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/a6YlKUH
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack bundle
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  IN-FINISH-AREA:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Go update the runbook
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; grep -R --count umask /etc 2>/dev/null|cut -d: -f1|sort -u; true ; } > /tmp/orchard/d52ad6a0-21ca-34ff-9314-7ff499e19697
+            echo "gate q1-release: $(wc -c </tmp/orchard/d52ad6a0-21ca-34ff-9314-7ff499e19697) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'd52ad6a0-21ca-34ff-9314-7ff499e19697'
+  q1-release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/d52ad6a0-21ca-34ff-9314-7ff499e19697
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Rehydrate tree
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  abortPairLen:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Bumper muxed at last
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; awk '{ print length($0), $0 }' "$HOME/.bashrc" | sort -n | tail -n 1; true ; } > /tmp/orchard/access.log.22
+            echo "gate feat-6489: $(wc -c </tmp/orchard/access.log.22) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'access.log.22'
+  feat-6489:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/access.log.22
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Fetch corpus
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  edgeDidLoad:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Compute sha256
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; cat /etc/skel/.profile | tr -s ' ' | wc -l; true ; } > /tmp/orchard/alpha.lazy.render.pixel
+            echo "gate cerberus-ng: $(wc -c </tmp/orchard/alpha.lazy.render.pixel) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'alpha.lazy.render.pixel'
+  cerberus-ng:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Checkout vendored deps
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  purple-hex:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: ST27
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ls -1Xn /etc/*tab | tail -n +2 | head -4; true ; } > /tmp/orchard/QH
+            echo "gate validate-full-integration-tests: $(wc -c </tmp/orchard/QH) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'QH'
+  validate-full-integration-tests:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/QH
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Prime workspace
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  bitBuf:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Dispatch the rotated logs over to staging
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; grep bash /etc/passwd | awk -F: '{print $1}'; true ; } > /tmp/orchard/memoGardenCarrierReceipt
+            echo "gate raj-build: $(wc -c </tmp/orchard/memoGardenCarrierReceipt) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'memoGardenCarrierReceipt'
+  raj-build:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/memoGardenCarrierReceipt
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack payload
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  nav-price-rounded:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Surveying the training records
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; echo 'keep going' >| '/tmp/round.dat' && cat '/tmp/round.dat'; true ; } > /tmp/orchard/08aq70ikdh
+            echo "gate brodcast: $(wc -c </tmp/orchard/08aq70ikdh) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '08aq70ikdh'
+  brodcast:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/08aq70ikdh
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore snapshot
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  Service-Tag:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Retry scroll if the password field times out
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; grep tmpfs /proc/mounts | sort | uniq -c; true ; } > /tmp/orchard/5.216.105
+            echo "gate UAT_CHECK_3: $(wc -c </tmp/orchard/5.216.105) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '5.216.105'
+  UAT_CHECK_3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/5.216.105
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Fetch sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  has-legend:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Spawn the physics layers with sudo
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; printf %s 'hello from the shell' | sha384sum | awk '{print $1}'; true ; } > /tmp/orchard/render.log
+            echo "gate nov13-ship: $(wc -c </tmp/orchard/render.log) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'render.log'
+  nov13-ship:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/render.log
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unroll archive
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  semaphore-27bytes:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Hold short of the mounted volume
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /opt -type d -iname '*' -exec stat -c %n {} + 2>/dev/null | tail -10; true ; } > /tmp/orchard/2aRbLx6Zwst4
+            echo "gate io-rc: $(wc -c </tmp/orchard/2aRbLx6Zwst4) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '2aRbLx6Zwst4'
+  io-rc:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/2aRbLx6Zwst4
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Seed workspace
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  Pre-Beam-Soft:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Approval before the cutover
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; for w in menu new green changelog inner calendar; do echo ${#w}; done; true ; } > /tmp/orchard/2027-07-13T16-16
+            echo "gate q2-canary: $(wc -c </tmp/orchard/2027-07-13T16-16) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '2027-07-13T16-16'
+  q2-canary:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/2027-07-13T16-16
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  wip-pattern:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: CALL imputation
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; printf %s "100%" | sha224sum | awk '{print $1}'; true ; } > /tmp/orchard/_wip-4c80340
+            echo "gate io-ng: $(wc -c </tmp/orchard/_wip-4c80340) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '_wip-4c80340'
+  io-ng:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore vendored sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  Exit-ResourceObject:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: 2024 COLLISION MESHES PLAYTEST
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; /usr/bin/kill -L | head -n 3; true ; } > /tmp/orchard/0f08bcfd
+            echo "gate v5-nightly: $(wc -c </tmp/orchard/0f08bcfd) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '0f08bcfd'
+  v5-nightly:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Fetch fixtures
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  PHCurveDidRedoNotification:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Would you tear down the maintenance page
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; DIR=(lion whale frog cat); for e in "${DIR[@]}"; do echo "$e"; done; true ; } > /tmp/orchard/41e235aec4fdab5931d67618cc632cb
+            echo "gate pr-2a: $(wc -c </tmp/orchard/41e235aec4fdab5931d67618cc632cb) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '41e235aec4fdab5931d67618cc632cb'
+  pr-2a:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/41e235aec4fdab5931d67618cc632cb
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Sync asset bundles
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  num_ini_bal:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Mini Map Cook Task
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; tr -s ' ' </proc/cpuinfo | awk '{print NF}'; true ; } > /tmp/orchard/ORD-75509-PU
+            echo "gate q3-release: $(wc -c </tmp/orchard/ORD-75509-PU) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'ORD-75509-PU'
+  q3-release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack toolkit
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  salt_:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Compute sha256
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; compgen -G "/etc/*.conf" | xargs -n1 basename; true ; } > /tmp/orchard/5WX
+            echo "gate publish: $(wc -c </tmp/orchard/5WX) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '5WX'
+  publish:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/5WX
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Hydrate workspace
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  readComplexArticleAdapter:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: dbg locale again
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; x=$(echo "fix typo" | wc -c); echo "chars: $x"; true ; } > /tmp/orchard/14.02.2026
+            echo "gate dp-3: $(wc -c </tmp/orchard/14.02.2026) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '14.02.2026'
+  dp-3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Extract sources
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  mod-057179-temp:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Weekend true up
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; printf 'name,city,score\nchen,rome,93\ndave,oslo,79\neva,denver,64\nzoe,perth,43\n' |awk -F, 'NR>1 && $3 >= m {m=$3; n=$1} END {print n, m}'; true ; } > /tmp/orchard/error_20210908
+            echo "gate rm-retry: $(wc -c </tmp/orchard/error_20210908) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'error_20210908'
+  rm-retry:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Restore build cache
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  page_attrs_salt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: The backup battery is stable
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; { printf "%s\n" hugo eva frank; } >"/tmp/row2.txt" && sort "/tmp/row2.txt"; true ; } > /tmp/orchard/1p1jm8k6enkl1
+            echo "gate node18-vet: $(wc -c </tmp/orchard/1p1jm8k6enkl1) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '1p1jm8k6enkl1'
+  node18-vet:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/error_20210908
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Pull reference data
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  onfail:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: 62 congrats
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; for item in /etc/sk*; do basename "$item"; done|sort -r; true ; } > /tmp/orchard/packet-signal-bison-otter
+            echo "gate fix-8245: $(wc -c </tmp/orchard/packet-signal-bison-otter) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'packet-signal-bison-otter'
+  fix-8245:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/packet-signal-bison-otter
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Stage inputs
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+  arrPage:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: After that cool down the orphan jobs
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ln -sf /etc/os-release "/var/tmp/scratch_2020.02.09.conf" && readlink "/var/tmp/scratch_2020.02.09.conf"; true ; } > /tmp/orchard/release.2.6
+            echo "gate apr22-smoke: $(wc -c </tmp/orchard/release.2.6) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'release.2.6'
+  apr22-smoke:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Sense gate output
+          command: |
+            cat /tmp/orchard/release.2.6
+      - run:
+          name: Get source tree
+          command: git clone --depth 2 --no-single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack bundle
+          command: bunzip2 -c slices-v4.tar.bz2 | tar xf -
+      - run:
+          command: nice -n 0 ./consumer-plus
+
+  ww:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Compute sha256
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; function ext_of { local s=0; for n; do s=$((s + n)); done; echo $s; }; ext_of 18 11 26 44; true ; } > /tmp/orchard/5WX
+            echo "gate publish: $(wc -c </tmp/orchard/5WX) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '5WX'
+  aud_convert_disconnect:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: 27 attest user sessions
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ls -c -X -A /dev | shuf -n 2; true ; } > /tmp/orchard/41e235aec4fdab5931d67618cc632cb
+            echo "gate pr-2a: $(wc -c </tmp/orchard/41e235aec4fdab5931d67618cc632cb) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '41e235aec4fdab5931d67618cc632cb'
+  Stage-Model:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Inspect
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; : > "/tmp/my-OfferCookieExpense.dat" && ls -l "/tmp/my-OfferCookieExpense.dat"; true ; } > /tmp/orchard/08aq70ikdh
+            echo "gate brodcast: $(wc -c </tmp/orchard/08aq70ikdh) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '08aq70ikdh'
+  FlatRayApi:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Recon the intro clip
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; for p in dog cat eagle frog fox goose; do printf '%s\n' $p; done | sort -r; true ; } > /tmp/orchard/access.log.22
+            echo "gate feat-6489: $(wc -c </tmp/orchard/access.log.22) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'access.log.22'
+  NamedFakeArticleElement:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Settle petty cash before close
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; for item in /etc/sk*; do stat -c "%A %n" $item;done | head -3; true ; } > /tmp/orchard/memoGardenCarrierReceipt
+            echo "gate raj-build: $(wc -c </tmp/orchard/memoGardenCarrierReceipt) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'memoGardenCarrierReceipt'
+  Final-Shade-Bit:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: publish newsletter
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; echo -n "see you later" | sha384sum; true ; } > /tmp/orchard/2027-07-13T16-16
+            echo "gate q2-canary: $(wc -c </tmp/orchard/2027-07-13T16-16) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '2027-07-13T16-16'
+  stalegradient:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Renewal through the proxy
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ls -SA . |xargs; true ; } > /tmp/orchard/md5_8c1ed58f3d4cdd
+            echo "gate jan17-canary: $(wc -c </tmp/orchard/md5_8c1ed58f3d4cdd) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'md5_8c1ed58f3d4cdd'
+  DEPRECATED:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Phase IV labeling
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; scratch=$(mktemp) && date > "$scratch" && cat "$scratch" && rm -f "$scratch"; true ; } > /tmp/orchard/7467.Blob-Burst
+            echo "gate chen-ship: $(wc -c </tmp/orchard/7467.Blob-Burst) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - '7467.Blob-Burst'
+  asset_decrypt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Inspect the test tubes at 37 degrees
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /var/log -type f -name "*.1" -exec stat -c "%y %n" {} + 2>/dev/null | xargs ls -ld; true ; } > /tmp/orchard/release.2.6
+            echo "gate apr22-smoke: $(wc -c </tmp/orchard/release.2.6) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'release.2.6'
+  uMin:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Phase VII Tear Down The Blue Green Slots
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; ls --no-group -c /bin/b*|wc -w; true ; } > /tmp/orchard/render.log
+            echo "gate nov13-ship: $(wc -c </tmp/orchard/render.log) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'render.log'
+  BUCKET_NBF:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Loot the user avatars
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; tar -C /etc -cf - hosts | gzip -c >"/tmp/local-GroupJuiceFilter.tar.gz" && tar -tzf "/tmp/local-GroupJuiceFilter.tar.gz"; true ; } > /tmp/orchard/d52ad6a0-21ca-34ff-9314-7ff499e19697
+            echo "gate q1-release: $(wc -c </tmp/orchard/d52ad6a0-21ca-34ff-9314-7ff499e19697) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'd52ad6a0-21ca-34ff-9314-7ff499e19697'
+  blvd_fld:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Flag the expense claims q2
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; find /usr/share -maxdepth 2 -name "*.txt" -printf '%f (%s bytes)\n' 2> /dev/null | wc -l; true ; } > /tmp/orchard/QH
+            echo "gate validate-full-integration-tests: $(wc -c </tmp/orchard/QH) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'QH'
+  da:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/orchard
+      - run:
+          name: Nothing to thumbnail
+          command: |
+            mkdir -p /tmp/orchard
+            { set +o pipefail 2>/dev/null; command ls /usr/share | shuf -n 2; true ; } > /tmp/orchard/packet-signal-bison-otter
+            echo "gate fix-8245: $(wc -c </tmp/orchard/packet-signal-bison-otter) bytes total"
+      - persist_to_workspace:
+          root: /tmp/orchard
+          paths:
+            - 'packet-signal-bison-otter'
+workflows:
+  ci:
+    jobs:
+      - Service-Tag
+      - UAT_CHECK_3:
+          requires:
+            - Service-Tag
+      - iMaxCategory:
+          requires:
+            - Service-Tag
+      - java17-fmt:
+          requires:
+            - iMaxCategory
+      - semaphore-27bytes:
+          requires:
+            - iMaxCategory
+      - io-rc:
+          requires:
+            - semaphore-27bytes
+      - safebuilder:
+          requires:
+            - semaphore-27bytes
+      - lets-go:
+          requires:
+            - safebuilder
+      - iDisabled:
+          requires:
+            - safebuilder
+      - PackagePipeline:
+          requires:
+            - iDisabled
+      - GlobalProxyUtil:
+          requires:
+            - iDisabled
+      - november-8:
+          requires:
+            - GlobalProxyUtil
+      - mod-057179-temp
+      - Exit-ResourceObject
+      - rm-retry:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - v5-nightly:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - io-ng:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - dp-3:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - yuki-build:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - v4-rc:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - cerberus-ng:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - spin-up:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - node18-vet:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - q3-release:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - Launch_Pipeline3:
+          requires:
+            - mod-057179-temp
+            - Exit-ResourceObject
+      - salt_
+      - ww:
+          requires:
+            - salt_
+      - publish:
+          requires:
+            - ww
+      - PHCurveDidRedoNotification:
+          requires:
+            - ww
+      - aud_convert_disconnect:
+          requires:
+            - PHCurveDidRedoNotification
+      - pr-2a:
+          requires:
+            - aud_convert_disconnect
+      - nav-price-rounded:
+          requires:
+            - aud_convert_disconnect
+      - Stage-Model:
+          requires:
+            - nav-price-rounded
+      - brodcast:
+          requires:
+            - Stage-Model
+      - abortPairLen:
+          requires:
+            - Stage-Model
+      - FlatRayApi:
+          requires:
+            - abortPairLen
+      - feat-6489:
+          requires:
+            - FlatRayApi
+      - bitBuf:
+          requires:
+            - FlatRayApi
+      - NamedFakeArticleElement:
+          requires:
+            - bitBuf
+      - raj-build:
+          requires:
+            - NamedFakeArticleElement
+      - Pre-Beam-Soft:
+          requires:
+            - NamedFakeArticleElement
+      - Final-Shade-Bit:
+          requires:
+            - Pre-Beam-Soft
+      - q2-canary:
+          requires:
+            - Final-Shade-Bit
+      - len12
+      - stalegradient:
+          requires:
+            - len12
+      - jan17-canary:
+          requires:
+            - stalegradient
+      - ARTICLE:
+          requires:
+            - stalegradient
+      - DEPRECATED:
+          requires:
+            - ARTICLE
+      - chen-ship:
+          requires:
+            - DEPRECATED
+      - arrPage:
+          requires:
+            - DEPRECATED
+      - asset_decrypt:
+          requires:
+            - arrPage
+      - apr22-smoke:
+          requires:
+            - asset_decrypt
+      - has-legend:
+          requires:
+            - asset_decrypt
+      - uMin:
+          requires:
+            - has-legend
+      - nov13-ship:
+          requires:
+            - uMin
+      - IN-FINISH-AREA:
+          requires:
+            - uMin
+      - BUCKET_NBF:
+          requires:
+            - IN-FINISH-AREA
+      - q1-release:
+          requires:
+            - BUCKET_NBF
+      - purple-hex:
+          requires:
+            - BUCKET_NBF
+      - blvd_fld:
+          requires:
+            - purple-hex
+      - validate-full-integration-tests:
+          requires:
+            - blvd_fld
+      - onfail:
+          requires:
+            - blvd_fld
+      - da:
+          requires:
+            - onfail
+      - fix-8245:
+          requires:
+            - da
